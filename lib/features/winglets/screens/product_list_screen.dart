@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../services/data_service.dart';
+import '../../../app/winglet_provider.dart';
 import '../widgets/product_tile.dart';
+import '../services/data_service.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -11,7 +12,13 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
-  final DataService _data = DataService();
+  late DataService data;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    data = WingletProvider.of(context).dataService;
+  }
 
   void _refresh() => setState(() {});
 
@@ -20,9 +27,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Каталог подкрылков')),
       body: ListView.builder(
-        itemCount: _data.products.length,
+        itemCount: data.products.length,
         itemBuilder: (context, index) {
-          return ProductTile(product: _data.products[index]);
+          return ProductTile(product: data.products[index]);
         },
       ),
       bottomNavigationBar: BottomAppBar(
@@ -34,12 +41,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
               ElevatedButton.icon(
                 icon: const Icon(Icons.shopping_cart),
                 label: const Text('Заказ'),
-                onPressed: () => context.push('/order'),
+                onPressed: () async {
+                  await context.push('/order');
+                  _refresh();
+                },
               ),
               ElevatedButton.icon(
                 icon: const Icon(Icons.inventory),
                 label: const Text('Склад'),
-                onPressed: () => context.push('/stock'),
+                onPressed: () async {
+                  await context.push('/stock');
+                  _refresh();
+                },
               ),
               ElevatedButton.icon(
                 icon: const Icon(Icons.history),

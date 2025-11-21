@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/service_locator.dart';
 import '../services/data_service.dart';
 import '../../../utils/format_utils.dart';
 
 class HistoryScreen extends StatelessWidget {
-  final DataService dataService;
-  const HistoryScreen({super.key, required this.dataService});
+  const HistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final DataService dataService = getIt<DataService>();
     final history = dataService.history;
 
     return Scaffold(
